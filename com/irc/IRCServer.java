@@ -15,7 +15,7 @@ public class IRCServer {
 	public static void listen(int port) {
 		try {
 			listener = new ServerSocket(port);
-			System.out.println("Listening on port " + port);
+			System.out.println("Listening at " + listener.getLocalSocketAddress());
 			connection = listener.accept();
 			System.out.println("Connected with " + connection.getInetAddress());
 		} catch(Exception e) {
@@ -26,7 +26,7 @@ public class IRCServer {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		listen(0);
+		listen(1970);
 
 	}
 
