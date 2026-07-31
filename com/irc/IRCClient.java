@@ -28,6 +28,9 @@ public class IRCClient {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		QuitProgram quitChecker = new QuitProgram();
+		Thread quitThread = new Thread(quitChecker);
+		quitThread.start();
 		connect("localhost",1970);
 	}
 

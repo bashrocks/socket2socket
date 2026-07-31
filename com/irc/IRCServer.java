@@ -37,6 +37,9 @@ public class IRCServer {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		QuitProgram quitChecker = new QuitProgram();
+		Thread quitThread = new Thread(quitChecker);
+		quitThread.start();
 		listen(1970);
 		listen(1970);
 
