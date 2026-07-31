@@ -14,14 +14,22 @@ public class IRCServer {
 	}
 	
 	public static void listen(int port) {
-		try {
-			listener = new ServerSocket(port);
-			System.out.println("Listening on port " + listener.getLocalPort());
-			connect();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		
+		Thread listenThread = new Thread() {
+			@Override
+			public void run() {
+				while(true) {
+					try {
+						listener = new ServerSocket(port);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					System.out.println("Listening on port " + listener.getLocalPort());
+					connect();
+				}
+			}
+		};
+		listenThread.start();
 	}
 	
 	public static void connect() {
@@ -40,7 +48,7 @@ public class IRCServer {
 		QuitProgram quitChecker = new QuitProgram();
 		Thread quitThread = new Thread(quitChecker);
 		quitThread.start();
-		listen(1970);
+		
 		listen(1970);
 
 	}
