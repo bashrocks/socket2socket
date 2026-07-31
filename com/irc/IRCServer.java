@@ -19,34 +19,18 @@ public class IRCServer {
 	}
 	
 	public static void listen(int port) {
-		Thread listenThread = new Thread() {
-			@Override
-			public void run() {
-				while(true) {
-					try {
-						listener = new ServerSocket(port);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					System.out.println("Listening on port " + listener.getLocalPort());
-					connect();
-				}
-			}
-		};
+		Thread listenThread = new Thread(new Listener(port));
 		listenThread.start();
 	}
 	
 	public static void connect() {
-		try {
-			connection = listener.accept();
-			listener.close();
-			System.out.println("Connected with " + connection.getInetAddress());
-			getMessage();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Thread connectThread = new Thread() {
+			@Override
+			public void run() {
+				
+			}
+		};
+		connectThread.start();
 	}
 	
 	public static void getMessage() {
@@ -67,6 +51,8 @@ public class IRCServer {
 		QuitProgram quitChecker = new QuitProgram();
 		Thread quitThread = new Thread(quitChecker);
 		quitThread.start();
+		
+		
 		
 		listen(1970);
 	}
