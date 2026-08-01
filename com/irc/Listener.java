@@ -10,7 +10,7 @@ public class Listener implements Runnable {
 	Socket connection;
 	int port;
 	
-	public Listener(int port) {
+	public Listener(int port) { 
 		// TODO Auto-generated constructor stub
 		this.port = port;
 		try {
