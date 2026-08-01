@@ -36,22 +36,15 @@ public class IRCClient {
 		
 	}
 	
-	// not sure this needs to be threaded? but i should git commit before i mess with it
-	public static void startSender() {
-
-					while (true) {
-						sendMessage(toServer);
-					}
-			
-		
-	}
-	
-	public static void sendMessage(BufferedWriter toServer) {
-		String message = userInput.nextLine();
+	public static void sendMessage() {
+		String message;
 		try {
-			toServer.write(message);
-			toServer.newLine();
-			toServer.flush();
+			while(true) {
+				message = userInput.nextLine();
+				toServer.write(message);
+				toServer.newLine();
+				toServer.flush();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -63,7 +56,8 @@ public class IRCClient {
 		// QuitProgram quitChecker = new QuitProgram();
 		// Thread quitThread = new Thread(quitChecker);
 		// quitThread.start();
-		startSender();
+		init();
+		sendMessage();
 	}
 
 }
