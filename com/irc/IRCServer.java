@@ -16,27 +16,27 @@ public class IRCServer {
 	public static void startServer() {
 		
 		Thread server = new Thread() {
-            @Override
-            public void run() {
-                ServerSocket ss;
-                try {
-                    ss = new ServerSocket(60010);
+			@Override
+			public void run() {
+				ServerSocket server;
+				try {
+					server = new ServerSocket(60010);
 
-                    Socket s = ss.accept();
+					Socket socket = server.accept();
 
-                    BufferedReader in = new BufferedReader(
-                            new InputStreamReader(s.getInputStream()));
-                    String line = null;
-                    while ((line = in.readLine()) != null) {
-                        System.out.println(line);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+					BufferedReader in = new BufferedReader(
+							new InputStreamReader(socket.getInputStream()));
+					String messageIn = null;
+					while ((messageIn = in.readLine()) != null) {
+						System.out.println(messageIn);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		};
 		server.start();
-    }
+	}
 
 	public static void main(String[] args) {
 		startServer();

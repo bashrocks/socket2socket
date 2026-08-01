@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
+	
 public class IRCClient {
 
 	public IRCClient() {
@@ -14,33 +14,33 @@ public class IRCClient {
 	}
 	
 	public static void startSender(String message) {
-        Thread sender = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Socket s = new Socket("localhost", 60010);
-                    BufferedWriter out = new BufferedWriter(
-                            new OutputStreamWriter(s.getOutputStream()));
+		Thread sender = new Thread() {
+			@Override
+			public void run() {
+				try {
+					Socket socket = new Socket("localhost", 60010);
+					BufferedWriter toServer = new BufferedWriter(
+							new OutputStreamWriter(socket.getOutputStream()));
 
-                    while (true) {
-                        out.write(message);
-                        out.newLine();
-                        out.flush();
+					while (true) {
+						toServer.write(message);
+						toServer.newLine();
+						toServer.flush();
+					 
+						Thread.sleep(1000);
+					}
 
-                        Thread.sleep(1000);
-                    }
-
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        sender.start();
-    }
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		sender.start();
+	}
 
 	public static void main(String[] args) {
 		// QuitProgram quitChecker = new QuitProgram();
