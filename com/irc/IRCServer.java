@@ -22,20 +22,38 @@ public class IRCServer {
 				try {
 					server = new ServerSocket(60010);
 
-					Socket socket = server.accept();
-
-					BufferedReader in = new BufferedReader(
-							new InputStreamReader(socket.getInputStream()));
-					String messageIn = null;
-					while ((messageIn = in.readLine()) != null) {
-						System.out.println(messageIn);
-					}
+					Socket socket;
+					do {
+						socket = server.accept();
+						sendReceive(socket);
+					} while(true);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		};
 		server.start();
+	}
+	
+	public static void sendReceive(Socket socket) {
+		Thread client = new Thread() {
+			@Override
+			public void run() {
+				BufferedReader in;
+				try {
+					in = new BufferedReader(
+							new InputStreamReader(socket.getInputStream()));
+					String messageIn = null;
+					while ((messageIn = in.readLine()) != null) {
+						System.out.println(messageIn);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		};
+		client.start();
 	}
 
 	public static void main(String[] args) {
