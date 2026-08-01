@@ -36,12 +36,12 @@ public class Listener implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		try {
-			do {
+			while(true) {
 				System.out.println("Listening on port " + listener.getLocalPort());
 				Thread connection = new Thread(new Connection(listener.accept()));
 				connection.start();
 				closeAndOpen();
-			} while(true);
+			} 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -2,7 +2,7 @@ package com.irc;
 
 import java.net.Socket;
 
-public class Connection implements Runnable {
+public class Connection extends Socket implements Runnable {
 	Socket socket;
 
 	public Connection(Socket socket) {

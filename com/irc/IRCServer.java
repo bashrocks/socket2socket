@@ -68,7 +68,9 @@ public class IRCServer {
 		Thread quitThread = new Thread(quitChecker);
 		quitThread.start();
 		
-		listen(1970);
+		Listener listen = new Listener(1970);
+		Thread listenThread = new Thread(listen);
+		listenThread.start();
 	}
 
 }
