@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 	
 public class IRCClient {
 
@@ -13,7 +14,9 @@ public class IRCClient {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static void startSender(String message) {
+	static Scanner userInput = new Scanner(System.in);
+	
+	public static void startSender() {
 		Thread sender = new Thread() {
 			@Override
 			public void run() {
@@ -23,32 +26,37 @@ public class IRCClient {
 							new OutputStreamWriter(socket.getOutputStream()));
 
 					while (true) {
-						toServer.write(message);
-						toServer.newLine();
-						toServer.flush();
-					 
-						Thread.sleep(1000);
+						sendMessage(toServer);
 					}
 
 				} catch (UnknownHostException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				} 
 			}
 		};
 		sender.start();
+	}
+	
+	public static void sendMessage(BufferedWriter toServer) {
+		String message = userInput.nextLine();
+		try {
+			toServer.write(message);
+			toServer.newLine();
+			toServer.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	public static void main(String[] args) {
 		// QuitProgram quitChecker = new QuitProgram();
 		// Thread quitThread = new Thread(quitChecker);
 		// quitThread.start();
-		String message = "Hello World!";
-		if(args.length>0) { message = args[0]; }
-		startSender(message);
+		startSender();
 	}
 
 }
