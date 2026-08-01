@@ -22,13 +22,9 @@ public class IRCServer {
 				ServerSocket server;
 				try {
 					server = new ServerSocket(port);
-
-					Socket socket;
 					do {
-						// turn Connection into object,
-						// holding a Socket, a BufferedWriter, a BufferedReader?
-						socket = server.accept();
-						sendReceive(socket);
+						Connection client = new Connection(server.accept());
+						sendReceive(client.socket);
 					} while(true);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -63,12 +59,12 @@ public class IRCServer {
 		client.start();
 	}
 	
-	public static void handshake(Socket socket) {
+	public static void handshake(Connection client) {
 		// check we're on the same protocol
-		checkUsername(socket);
+		checkUsername(client);
 	}
 	
-	public static void checkUsername(Socket socket) {
+	public static void checkUsername(Connection client) {
 		
 	}
 
