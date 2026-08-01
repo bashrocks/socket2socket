@@ -14,14 +14,14 @@ public class IRCServer {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static void startServer() {
+	public static void startServer(int port) {
 		
 		Thread server = new Thread() {
 			@Override
 			public void run() {
 				ServerSocket server;
 				try {
-					server = new ServerSocket(60010);
+					server = new ServerSocket(port);
 
 					Socket socket;
 					do {
@@ -73,7 +73,7 @@ public class IRCServer {
 	}
 
 	public static void main(String[] args) {
-		startServer();
+		startServer(60010);
 	}
 
 }

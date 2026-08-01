@@ -20,9 +20,9 @@ public class IRCClient {
 	static BufferedWriter toServer;
 	
 	// new, needs testing
-	public static void init() {
+	public static void init(String addr, int port) {
 		try {
-			socket = new Socket("localhost", 60010);
+			socket = new Socket(addr,port);
 			toServer = new BufferedWriter(
 					new OutputStreamWriter(socket.getOutputStream()));
 		} catch (IOException e) {
@@ -61,7 +61,7 @@ public class IRCClient {
 		// QuitProgram quitChecker = new QuitProgram();
 		// Thread quitThread = new Thread(quitChecker);
 		// quitThread.start();
-		init();
+		init("localhost", 60010);
 		sendMessage();
 	}
 
