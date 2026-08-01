@@ -1,7 +1,5 @@
 Initial source code from https://stackoverflow.com/questions/10069059/is-it-possible-to-run-a-socket-server-and-socket-client-on-the-same-machine
 
-Connection.java and Listener.java are not currently in use but remain in case I need to add their functions back in.
-
 Current troubles:
 - I need a Listener thread to remain active for new incoming requests, but currently the Listener is blocked by the active connection.
 - I would prefer Listener be its own Runnable class to make stack traces more readable. 
@@ -11,3 +9,5 @@ Current questions:
 - How can I create a Listener thread that stays active, and also create threads for the active connection? 
 - Can `java.nio` solve this problem for me somehow? I have read some about interleaving and non-blocking, but I don't know how that is related to threads or whether it would solve my Listener issue.
 - help
+
+**Note to self:** Some of the code in the Listener.java and Connection.java files may be useful, and this can be found in the `listener-runnable` branch
