@@ -25,6 +25,8 @@ public class IRCServer {
 
 					Socket socket;
 					do {
+						// turn Connection into object,
+						// holding a Socket, a BufferedWriter, a BufferedReader?
 						socket = server.accept();
 						sendReceive(socket);
 					} while(true);
@@ -59,6 +61,15 @@ public class IRCServer {
 			}
 		};
 		client.start();
+	}
+	
+	public static void handshake(Socket socket) {
+		// check we're on the same protocol
+		checkUsername(socket);
+	}
+	
+	public static void checkUsername(Socket socket) {
+		
 	}
 
 	public static void main(String[] args) {
