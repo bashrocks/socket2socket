@@ -31,9 +31,14 @@ public class IRCClient {
 		}
 	}
 	
+	public static void handshake() {
+		// check we're on the same protocol
+		setUsername();
+	}
+	
 	public static void setUsername() {
 		System.out.println("Please enter a username.");
-		
+		username = userInput.nextLine();
 	}
 	
 	public static void sendMessage() {
