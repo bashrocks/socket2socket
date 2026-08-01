@@ -5,4 +5,11 @@ Current troubles:
 - I would prefer Listener be its own Runnable class to make stack traces more readable. 
 - I/O requires a lot of try..catch blocks, which makes the code much harder to read. Because I still don't really understand I/O, I don't know how to consolidate things once I change them.
 
+To do:
+- [x] Accept client input for messages
+- [ ] Assign client ID numbers or usernames - or request? (validate to avoid duplicates?)
+- [ ] Prepend ID to each message
+- [ ] Echo messages from all clients to each client, not just to server
+- [ ] Close client thread when they disconnect (check .isInputShutdown ?)
+
 **Note to self:** Some of the code in the Listener.java and Connection.java files may be useful, and this can be found in the `listener-runnable` branch
