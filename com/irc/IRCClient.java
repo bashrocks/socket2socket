@@ -15,28 +15,35 @@ public class IRCClient {
 	}
 	
 	static Scanner userInput = new Scanner(System.in);
+	static Socket socket;
+	static String username;
+	static BufferedWriter toServer;
 	
+	// new, needs testing
+	public static void init() {
+		try {
+			socket = new Socket("localhost", 60010);
+			toServer = new BufferedWriter(
+					new OutputStreamWriter(socket.getOutputStream()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void setUsername() {
+		System.out.println("Please enter a username.");
+		
+	}
+	
+	// not sure this needs to be threaded? but i should git commit before i mess with it
 	public static void startSender() {
-		Thread sender = new Thread() {
-			@Override
-			public void run() {
-				try {
-					Socket socket = new Socket("localhost", 60010);
-					BufferedWriter toServer = new BufferedWriter(
-							new OutputStreamWriter(socket.getOutputStream()));
 
 					while (true) {
 						sendMessage(toServer);
 					}
-
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} 
-			}
-		};
-		sender.start();
+			
+		
 	}
 	
 	public static void sendMessage(BufferedWriter toServer) {
