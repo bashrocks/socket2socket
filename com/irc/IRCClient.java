@@ -30,9 +30,9 @@ public class IRCClient {
 	public static void validateProtocol(Connection server) throws CertificateException {
 		try {
 			System.out.println("Validating protocols.");
-			server.writer.write(protocol);
+			server.write(protocol);
 			System.out.println("Protocol information sent to server.");
-			String serverProtocol = server.reader.readLine();
+			String serverProtocol = server.read();
 			System.out.println("Protocol information received from server.");
 			if(serverProtocol.contentEquals(protocol)) {
 				System.out.println("Client and server protocol matches.");
@@ -40,9 +40,9 @@ public class IRCClient {
 				throw new CertificateException("Client/server protocol mismatch"); 
 				}
 			System.out.println("Validating versions.");
-			server.writer.write(version);
+			server.write(version);
 			System.out.println("Version information sent to server.");
-			String serverVersion = server.reader.readLine();
+			String serverVersion = server.read();
 			if(serverVersion.contentEquals(version)) {
 				System.out.println("Client and server version matches.");
 			} else { 
@@ -54,17 +54,17 @@ public class IRCClient {
 		}
 	}
 	
-	public static void askForUsername() {
+	public static void validateUsername() {
 		try {
 			System.out.println("Please enter a username.");
 			String username = userInput.nextLine();
-			server.writer.write(username);
+			server.write(username);
 			System.out.println("Sending username to server...");
-			String serverResponse = server.reader.readLine();
+			String serverResponse = server.read();
 			while(serverResponse == errResourceInUse) {
 				System.out.println("That username is taken. Try again");
-				server.writer.write(username);
-				serverResponse = server.reader.readLine();
+				server.write(username);
+				serverResponse = server.read();
 			}
 			server.setUsername(username);
 			System.out.println("Username set to " + server.getUsername());
@@ -79,9 +79,7 @@ public class IRCClient {
 		try {
 			while(true) {
 				message = server.getUsername() + ": " + userInput.nextLine();
-				server.writer.write(message);
-				server.writer.newLine();
-				server.writer.flush();
+				server.write(message);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -102,7 +100,7 @@ public class IRCClient {
 			System.exit(0);
 		}
 		*/
-		// askForUsername();
+		validateUsername();
 		sendMessage();
 	}
 
