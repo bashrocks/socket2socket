@@ -12,7 +12,7 @@ public class Connection {
 	public Socket socket;
 	public BufferedWriter writer;
 	public BufferedReader reader;
-	public String username;
+	String username = "unnamedUser";
 	
 	public String getUsername() { return this.username; }
 	public void setUsername(String username) { this.username = username; }

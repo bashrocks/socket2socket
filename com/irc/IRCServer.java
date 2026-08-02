@@ -14,6 +14,11 @@ public class IRCServer {
 	static ArrayList<String> usersList = new ArrayList<>();
 	static String protocol = "bashrocks-socket2socket";
 	static String version = "0.1";
+	static Integer nextID = 1001;
+	
+	// success/failure codes
+	static String successCode = "SUCCESS";
+	static String errResourceInUse = "ERR_IN_USE";
 	
 	public static void startServer(int port) {
 		
@@ -44,17 +49,19 @@ public class IRCServer {
 		Thread clientThread = new Thread() {
 			@Override
 			public void run() {
+				System.out.println("Connected to new client on port " + client.socket.getLocalPort());
+				/*
 				try {
-					System.out.println("Connected to new client on port " + client.socket.getLocalPort());
 					validateProtocol(client);
-					// validateUsername(client);
 				} catch (CertificateException e) {
 					e.printStackTrace();
 					System.exit(0);
 				}
+				*/
+				// validateUsername(client);
 				try {
+					System.out.println(client.getUsername() + " can now send messages.");
 					String messageIn = null;
-					String messageOut = null;
 					while ((messageIn = client.reader.readLine()) != null) {
 						System.out.println(messageIn);
 					}
@@ -81,7 +88,7 @@ public class IRCServer {
 			String clientProtocol = client.reader.readLine();
 			System.out.println("Protocol information received from client.");
 			if(clientProtocol.contentEquals(protocol)) {
-				client.writer.write("Client and server protocol matches.");
+				System.out.println("Client and server protocol matches.");
 			} else { 
 				throw new CertificateException("Client/server protocol mismatch"); 
 				}
@@ -90,7 +97,7 @@ public class IRCServer {
 			System.out.println("Version information sent to client.");
 			String clientVersion = client.reader.readLine();
 			if(clientVersion.contentEquals(version)) {
-				client.writer.write("Client and server version matches.");
+				System.out.println("Client and server version matches.");
 			} else { 
 				throw new CertificateException("Client/server version mismatch"); 
 			}
@@ -99,16 +106,36 @@ public class IRCServer {
 		}
 	}
 	
-	public static void validateUsername(Connection client) {
+	public static void setID(Connection client) {
 		try {
+			String userID = nextID.toString();
+			client.writer.write(userID);
+			client.setUsername(userID);
+			System.out.println("Client username set to " + client.getUsername());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void validateUsername(Connection client) {
+		// TODO testing validation
+		usersList.add("bashrocks");
+		usersList.add("unnamedUser");
+		try {
+			System.out.println("Asking for username...");
 			String username = client.reader.readLine();
+			System.out.println("Username received.");
 			while(usersList.contains(username)) {
-				client.writer.write("Username " + username + " is already in "
-						+ "use. Try again.");
+				System.out.println("Username taken. Asking again...");
+				client.writer.write(errResourceInUse);
 				username = client.reader.readLine();
 			}
+			if(username==null) {
+				throw new NullPointerException("Username is null");
+			}
 			client.setUsername(username);
-			client.writer.write("Username set to " + client.getUsername());
+			client.writer.write(successCode);
+			System.out.println("Client username set to " + client.getUsername());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

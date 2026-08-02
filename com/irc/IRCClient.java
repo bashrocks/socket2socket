@@ -11,10 +11,13 @@ public class IRCClient {
 	}
 	
 	static Scanner userInput = new Scanner(System.in);
-	static String username;
 	static Connection server;
 	static String protocol = "bashrocks-socket2socket";
 	static String version = "0.1";
+	
+	// success/failure codes
+	static String successCode = "SUCCESS";
+	static String errResourceInUse = "ERR_IN_USE";
 	
 	// new, needs testing
 	// TODO change this for Connection object?
@@ -52,10 +55,19 @@ public class IRCClient {
 	}
 	
 	public static void askForUsername() {
-		System.out.println("Please enter a username.");
-		username = userInput.nextLine();
 		try {
+			System.out.println("Please enter a username.");
+			String username = userInput.nextLine();
 			server.writer.write(username);
+			System.out.println("Sending username to server...");
+			String serverResponse = server.reader.readLine();
+			while(serverResponse == errResourceInUse) {
+				System.out.println("That username is taken. Try again");
+				server.writer.write(username);
+				serverResponse = server.reader.readLine();
+			}
+			server.setUsername(username);
+			System.out.println("Username set to " + server.getUsername());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -63,9 +75,10 @@ public class IRCClient {
 	
 	public static void sendMessage() {
 		String message;
+		System.out.println("You can now send messages.");
 		try {
 			while(true) {
-				message = userInput.nextLine();
+				message = server.getUsername() + ": " + userInput.nextLine();
 				server.writer.write(message);
 				server.writer.newLine();
 				server.writer.flush();
@@ -81,14 +94,15 @@ public class IRCClient {
 		// Thread quitThread = new Thread(quitChecker);
 		// quitThread.start();
 		init("localhost", 60010);
-		
+		/*
 		try {
 			validateProtocol(server);
 		} catch (CertificateException e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		
+		*/
+		// askForUsername();
 		sendMessage();
 	}
 
