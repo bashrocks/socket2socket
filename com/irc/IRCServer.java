@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class IRCServer {
 
@@ -12,6 +13,7 @@ public class IRCServer {
 	}
 	
 	static ArrayList<String> usersList = new ArrayList<>();
+	static ArrayList<Connection> connections = new ArrayList<>();
 	static String protocol = "bashrocks-socket2socket";
 	static String version = "0.1";
 	static Integer nextID = 1001;
@@ -19,6 +21,16 @@ public class IRCServer {
 	// success/failure codes
 	static String successCode = "SUCCESS";
 	static String errResourceInUse = "ERR_IN_USE";
+	
+	public static void echo(String message) {
+		for(Connection client : connections) {
+			try {
+				client.write(message);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	public static void startServer(int port) {
 		
@@ -50,6 +62,7 @@ public class IRCServer {
 	 * @param client
 	 */
 	public static void sendReceive(Connection client) {
+		connections.add(client);
 		Thread clientThread = new Thread() {
 			@Override
 			public void run() {
@@ -59,15 +72,16 @@ public class IRCServer {
 					validateProtocol(client);
 				} catch (CertificateException e) {
 					e.printStackTrace();
-					System.exit(0);
+					// TODO client.disconnect()?
 				}
 				
 				validateUsername(client);
 				try {
 					System.out.println(client.getUsername() + " can now send messages.");
-					String messageIn = null;
-					while ((messageIn = client.read()) != null) {
-						System.out.println(messageIn);
+					String message = null;
+					while ((message = client.read()) != null) {
+						echo(message);
+						System.out.println(message);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();

@@ -74,9 +74,26 @@ public class IRCClient {
 		}
 	}
 	
+	public static void sendReceive() {
+		System.out.println("You can now send and receive messages.");
+		Thread outgoing = new Thread() {
+			@Override
+			public void run() {
+				sendMessage();
+			}
+		};
+		Thread incoming = new Thread() {
+			@Override
+			public void run() {
+				receiveMessage();
+			}		
+		};
+		outgoing.start();
+		incoming.start();
+	}
+	
 	public static void sendMessage() {
 		String message;
-		System.out.println("You can now send messages.");
 		try {
 			while(true) {
 				message = server.getUsername() + ": " + userInput.nextLine();
@@ -85,7 +102,17 @@ public class IRCClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+	}
+	
+	public static void receiveMessage() {
+		String message;
+		try {
+			while((message = server.read()) != null) {
+				System.out.println(message);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {
@@ -102,7 +129,7 @@ public class IRCClient {
 		}
 		
 		validateUsername();
-		sendMessage();
+		sendReceive();
 	}
 
 }

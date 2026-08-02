@@ -12,5 +12,5 @@ To do:
 - [x] Request client username
 - [ ] Validate usernames to avoid duplicates
 - [X] Prepend username to each message
-- [ ] Echo messages from all clients to each client, not just to server
+- [X] Echo messages from all clients to each client, not just to server
 - [ ] Close client thread when they disconnect (check .isInputShutdown ?)
