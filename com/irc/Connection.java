@@ -10,8 +10,8 @@ import java.net.Socket;
 public class Connection {
 	
 	public Socket socket;
-	public BufferedWriter writer;
-	public BufferedReader reader;
+	BufferedWriter writer;
+	BufferedReader reader;
 	String username = "unnamedUser";
 	
 	public String getUsername() { return this.username; }

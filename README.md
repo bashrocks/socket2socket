@@ -5,7 +5,7 @@ Current troubles:
 - ~~I would prefer Listener be its own Runnable class to make stack traces more readable.~~ Unfortunately I don't think this is doable in this implementation & time frame.
 - ~~I/O requires a lot of try..catch blocks, which makes the code much harder to read. Because I still don't really understand I/O, I don't know how to consolidate things once I change them.~~ Getting better at seeing this and catching it.
 - ~~validateProtocol seems to be working on the server side if it's not enabled on the client side; typed client input at sendMessage is interpreted as a protocol and throws an error on the server side. ~~ AHA! I wasn't flushing the write buffer!
-- I don't think I have been using Git branches appropriately. Current working version is on the connection-object branch
+- ~~I don't think I have been using Git branches appropriately. Current working version is on the connection-object branch~~ branches have been successfully merged to main & pruned
 
 To do:
 - [x] Accept client input for messages
@@ -13,4 +13,5 @@ To do:
 - [x] Validate usernames to avoid duplicates
 - [X] Prepend username to each message
 - [X] Echo messages from all clients to each client, not just to server
-- [ ] Close client thread when they disconnect (check .isInputShutdown ?)
+- [ ] Intentional disconnect from client that sends a terminate signal to server
+- [ ] Server heartbeat messages and read timeout to close client thread
