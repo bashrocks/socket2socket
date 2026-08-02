@@ -44,5 +44,14 @@ public class Connection {
 			e.printStackTrace();
 		}
 	}
+	
+	public void write(String text) throws IOException {
+		this.writer.write(text);
+		this.writer.newLine();
+		this.writer.flush();
+	}
+	public String read() throws IOException {
+		return this.reader.readLine();
+	}
 
 }

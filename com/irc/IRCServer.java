@@ -58,11 +58,11 @@ public class IRCServer {
 					System.exit(0);
 				}
 				*/
-				// validateUsername(client);
+				validateUsername(client);
 				try {
 					System.out.println(client.getUsername() + " can now send messages.");
 					String messageIn = null;
-					while ((messageIn = client.reader.readLine()) != null) {
+					while ((messageIn = client.read()) != null) {
 						System.out.println(messageIn);
 					}
 				} catch (IOException e) {
@@ -83,9 +83,9 @@ public class IRCServer {
 	public static void validateProtocol(Connection client) throws CertificateException {
 		try {
 			System.out.println("Validating protocols.");
-			client.writer.write(protocol);
+			client.write(protocol);
 			System.out.println("Protocol information sent to client.");
-			String clientProtocol = client.reader.readLine();
+			String clientProtocol = client.read();
 			System.out.println("Protocol information received from client.");
 			if(clientProtocol.contentEquals(protocol)) {
 				System.out.println("Client and server protocol matches.");
@@ -93,9 +93,9 @@ public class IRCServer {
 				throw new CertificateException("Client/server protocol mismatch"); 
 				}
 			System.out.println("Validating versions.");
-			client.writer.write(version);
+			client.write(version);
 			System.out.println("Version information sent to client.");
-			String clientVersion = client.reader.readLine();
+			String clientVersion = client.read();
 			if(clientVersion.contentEquals(version)) {
 				System.out.println("Client and server version matches.");
 			} else { 
@@ -109,7 +109,7 @@ public class IRCServer {
 	public static void setID(Connection client) {
 		try {
 			String userID = nextID.toString();
-			client.writer.write(userID);
+			client.write(userID);
 			client.setUsername(userID);
 			System.out.println("Client username set to " + client.getUsername());
 		} catch (IOException e) {
@@ -123,18 +123,18 @@ public class IRCServer {
 		usersList.add("unnamedUser");
 		try {
 			System.out.println("Asking for username...");
-			String username = client.reader.readLine();
+			String username = client.read();
 			System.out.println("Username received.");
 			while(usersList.contains(username)) {
 				System.out.println("Username taken. Asking again...");
-				client.writer.write(errResourceInUse);
-				username = client.reader.readLine();
+				client.write(errResourceInUse);
+				username = client.read();
 			}
 			if(username==null) {
 				throw new NullPointerException("Username is null");
 			}
 			client.setUsername(username);
-			client.writer.write(successCode);
+			client.write(successCode);
 			System.out.println("Client username set to " + client.getUsername());
 		} catch (IOException e) {
 			e.printStackTrace();
