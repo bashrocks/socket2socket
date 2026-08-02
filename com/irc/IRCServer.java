@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
-import java.util.TreeMap;
 
 public class IRCServer {
 
@@ -105,7 +104,7 @@ public class IRCServer {
 			System.out.println("Protocol information sent to client.");
 			String clientProtocol = client.read();
 			System.out.println("Protocol information received from client.");
-			if(clientProtocol.contentEquals(protocol)) {
+			if(clientProtocol.equals(protocol)) {
 				System.out.println("Client and server protocol matches.");
 			} else { 
 				throw new CertificateException("Client/server protocol mismatch"); 
@@ -114,7 +113,7 @@ public class IRCServer {
 			client.write(version);
 			System.out.println("Version information sent to client.");
 			String clientVersion = client.read();
-			if(clientVersion.contentEquals(version)) {
+			if(clientVersion.equals(version)) {
 				System.out.println("Client and server version matches.");
 			} else { 
 				throw new CertificateException("Client/server version mismatch"); 

@@ -34,7 +34,7 @@ public class IRCClient {
 			System.out.println("Protocol information sent to server.");
 			String serverProtocol = server.read();
 			System.out.println("Protocol information received from server.");
-			if(serverProtocol.contentEquals(protocol)) {
+			if(serverProtocol.equals(protocol)) {
 				System.out.println("Client and server protocol matches.");
 			} else { 
 				throw new CertificateException("Client/server protocol mismatch"); 
@@ -43,7 +43,7 @@ public class IRCClient {
 			server.write(version);
 			System.out.println("Version information sent to server.");
 			String serverVersion = server.read();
-			if(serverVersion.contentEquals(version)) {
+			if(serverVersion.equals(version)) {
 				System.out.println("Client and server version matches.");
 			} else { 
 				throw new CertificateException("Client/server version mismatch"); 
@@ -61,7 +61,7 @@ public class IRCClient {
 			server.write(username);
 			System.out.println("Sending username to server...");
 			String serverResponse = server.read();
-			while(serverResponse == errResourceInUse) {
+			while(serverResponse.equals(errResourceInUse)) {
 				System.out.println("That username is taken. Try again");
 				username = userInput.nextLine();
 				server.write(username);

@@ -10,7 +10,7 @@ Current troubles:
 To do:
 - [x] Accept client input for messages
 - [x] Request client username
-- [ ] Validate usernames to avoid duplicates
+- [x] Validate usernames to avoid duplicates
 - [X] Prepend username to each message
 - [X] Echo messages from all clients to each client, not just to server
 - [ ] Close client thread when they disconnect (check .isInputShutdown ?)
