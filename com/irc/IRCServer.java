@@ -45,19 +45,23 @@ public class IRCServer {
 		server.start();
 	}
 	
+	/**
+	 * Starts a thread to communicate with the client.
+	 * @param client
+	 */
 	public static void sendReceive(Connection client) {
 		Thread clientThread = new Thread() {
 			@Override
 			public void run() {
 				System.out.println("Connected to new client on port " + client.socket.getLocalPort());
-				/*
+				
 				try {
 					validateProtocol(client);
 				} catch (CertificateException e) {
 					e.printStackTrace();
 					System.exit(0);
 				}
-				*/
+				
 				validateUsername(client);
 				try {
 					System.out.println(client.getUsername() + " can now send messages.");
@@ -106,17 +110,6 @@ public class IRCServer {
 		}
 	}
 	
-	public static void setID(Connection client) {
-		try {
-			String userID = nextID.toString();
-			client.write(userID);
-			client.setUsername(userID);
-			System.out.println("Client username set to " + client.getUsername());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public static void validateUsername(Connection client) {
 		// TODO testing validation
 		usersList.add("bashrocks");
@@ -128,6 +121,7 @@ public class IRCServer {
 			while(usersList.contains(username)) {
 				System.out.println("Username taken. Asking again...");
 				client.write(errResourceInUse);
+				username = null;
 				username = client.read();
 			}
 			if(username==null) {

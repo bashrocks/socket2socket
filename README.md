@@ -9,7 +9,8 @@ Current troubles:
 
 To do:
 - [x] Accept client input for messages
-- [ ] Assign client ID numbers or usernames - or request? (validate to avoid duplicates?)
-- [ ] Prepend ID to each message
+- [x] Request client username
+- [ ] Validate usernames to avoid duplicates
+- [X] Prepend username to each message
 - [ ] Echo messages from all clients to each client, not just to server
 - [ ] Close client thread when they disconnect (check .isInputShutdown ?)

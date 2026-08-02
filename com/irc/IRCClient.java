@@ -63,6 +63,7 @@ public class IRCClient {
 			String serverResponse = server.read();
 			while(serverResponse == errResourceInUse) {
 				System.out.println("That username is taken. Try again");
+				username = userInput.nextLine();
 				server.write(username);
 				serverResponse = server.read();
 			}
@@ -92,14 +93,14 @@ public class IRCClient {
 		// Thread quitThread = new Thread(quitChecker);
 		// quitThread.start();
 		init("localhost", 60010);
-		/*
+		
 		try {
 			validateProtocol(server);
 		} catch (CertificateException e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		*/
+		
 		validateUsername();
 		sendMessage();
 	}
