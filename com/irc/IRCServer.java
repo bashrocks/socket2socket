@@ -37,7 +37,7 @@ public class IRCServer {
 							e.printStackTrace();
 							System.exit(0);
 						}
-						validateUsername(client);
+						// validateUsername(client);
 						sendReceive(client);
 					} while(true);
 				} catch (IOException e) {
