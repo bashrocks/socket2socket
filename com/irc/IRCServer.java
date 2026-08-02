@@ -1,12 +1,7 @@
 package com.irc;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 
@@ -82,13 +77,19 @@ public class IRCServer {
 		try {
 			System.out.println("Validating protocols.");
 			client.writer.write(protocol);
-			if(client.reader.readLine().contentEquals(protocol)) {
+			System.out.println("Protocol information sent to client.");
+			String clientProtocol = client.reader.readLine();
+			System.out.println("Protocol information received from client.");
+			if(clientProtocol.contentEquals(protocol)) {
 				client.writer.write("Client and server protocol matches.");
 			} else { 
 				throw new CertificateException("Client/server protocol mismatch"); 
 				}
+			System.out.println("Validating versions.");
 			client.writer.write(version);
-			if(client.reader.readLine().contentEquals(version)) {
+			System.out.println("Version information sent to client.");
+			String clientVersion = client.reader.readLine();
+			if(clientVersion.contentEquals(version)) {
 				client.writer.write("Client and server version matches.");
 			} else { 
 				throw new CertificateException("Client/server version mismatch"); 

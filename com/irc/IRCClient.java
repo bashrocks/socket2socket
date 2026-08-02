@@ -28,13 +28,19 @@ public class IRCClient {
 		try {
 			System.out.println("Validating protocols.");
 			server.writer.write(protocol);
-			if(server.reader.readLine().contentEquals(protocol)) {
+			System.out.println("Protocol information sent to server.");
+			String serverProtocol = server.reader.readLine();
+			System.out.println("Protocol information received from server.");
+			if(serverProtocol.contentEquals(protocol)) {
 				System.out.println("Client and server protocol matches.");
 			} else { 
 				throw new CertificateException("Client/server protocol mismatch"); 
 				}
+			System.out.println("Validating versions.");
 			server.writer.write(version);
-			if(server.reader.readLine().contentEquals(version)) {
+			System.out.println("Version information sent to server.");
+			String serverVersion = server.reader.readLine();
+			if(serverVersion.contentEquals(version)) {
 				System.out.println("Client and server version matches.");
 			} else { 
 				throw new CertificateException("Client/server version mismatch"); 
@@ -75,14 +81,14 @@ public class IRCClient {
 		// Thread quitThread = new Thread(quitChecker);
 		// quitThread.start();
 		init("localhost", 60010);
-		/*
+		
 		try {
 			validateProtocol(server);
 		} catch (CertificateException e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		*/
+		
 		sendMessage();
 	}
 
