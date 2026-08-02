@@ -28,17 +28,14 @@ public class IRCServer {
 				ServerSocket server;
 				try {
 					server = new ServerSocket(port);
+					System.out.println("Sockets initialized."
+							+ "\nListening on port " + port);
+					/* Do/while loop watches for incoming connections and 
+					 * creates a new thread for each connection request.
+					 */
 					do {
 						Connection client = new Connection(server.accept());
-						try {
-							validateProtocol(client);
-						} catch (CertificateException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							System.exit(0);
-						}
-						// validateUsername(client);
-						sendReceive(client);
+						sendReceive(client); // starts the thread
 					} while(true);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -53,23 +50,37 @@ public class IRCServer {
 			@Override
 			public void run() {
 				try {
+					System.out.println("Connected to new client on port " + client.socket.getLocalPort());
+					validateProtocol(client);
+					// validateUsername(client);
+				} catch (CertificateException e) {
+					e.printStackTrace();
+					System.exit(0);
+				}
+				try {
 					String messageIn = null;
 					String messageOut = null;
 					while ((messageIn = client.reader.readLine()) != null) {
 						System.out.println(messageIn);
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		};
 		clientThread.start();
+		// TODO how to close the thread when connection lost?
 	}
 
-	// check we're on the same protocol and program version
+	/**
+	 * This asks the client for protocol and version information to verify
+	 * server and client are running compatible software.
+	 * @param client - Connection to check
+	 * @throws CertificateException if protocol or version mismatch is found
+	 */
 	public static void validateProtocol(Connection client) throws CertificateException {
 		try {
+			System.out.println("Validating protocols.");
 			client.writer.write(protocol);
 			if(client.reader.readLine().contentEquals(protocol)) {
 				client.writer.write("Client and server protocol matches.");
@@ -83,7 +94,6 @@ public class IRCServer {
 				throw new CertificateException("Client/server version mismatch"); 
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -99,7 +109,6 @@ public class IRCServer {
 			client.setUsername(username);
 			client.writer.write("Username set to " + client.getUsername());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
