@@ -33,6 +33,10 @@ public class Connection {
 		}
 	}
 	
+	public Connection(int port) {
+		this("localhost",port);
+	}
+	
 	public void setIO() {
 		try {
 			this.writer = new BufferedWriter(

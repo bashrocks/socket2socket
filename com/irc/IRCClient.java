@@ -5,10 +5,6 @@ import java.security.cert.CertificateException;
 import java.util.Scanner;
 	
 public class IRCClient {
-
-	public IRCClient() {
-		// TODO Auto-generated constructor stub
-	}
 	
 	static Scanner userInput = new Scanner(System.in);
 	static Connection server;
@@ -21,9 +17,16 @@ public class IRCClient {
 	
 	// new, needs testing
 	// TODO change this for Connection object?
-	public static void init(String addr, int port) {
+	public static void init(String addr, String arg2) {
+		int port = Integer.parseInt(arg2);
 		server = new Connection(addr,port);
 		System.out.println("Connected to server on port " + port);
+	}
+	
+	public static void init(String arg) {
+		int port = Integer.parseInt(arg);
+		server = new Connection(port);
+		System.out.println("Connected to localhost on port " + port);
 	}
 
 	// check we're on the same protocol and program version
@@ -119,7 +122,8 @@ public class IRCClient {
 		// QuitProgram quitChecker = new QuitProgram();
 		// Thread quitThread = new Thread(quitChecker);
 		// quitThread.start();
-		init("localhost", 60010);
+		if(args.length == 2) { init(args[0],args[1]); }
+		else init(args[0]);
 		
 		try {
 			validateProtocol(server);

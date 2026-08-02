@@ -1,12 +1,3 @@
-Initial source code from https://stackoverflow.com/questions/10069059/is-it-possible-to-run-a-socket-server-and-socket-client-on-the-same-machine
-
-Current troubles:
-- ~~I need a Listener thread to remain active for new incoming requests, but currently the Listener is blocked by the active connection.~~ Multithread is working! Thank you Skrigak!!!
-- ~~I would prefer Listener be its own Runnable class to make stack traces more readable.~~ Unfortunately I don't think this is doable in this implementation & time frame.
-- ~~I/O requires a lot of try..catch blocks, which makes the code much harder to read. Because I still don't really understand I/O, I don't know how to consolidate things once I change them.~~ Getting better at seeing this and catching it.
-- ~~validateProtocol seems to be working on the server side if it's not enabled on the client side; typed client input at sendMessage is interpreted as a protocol and throws an error on the server side. ~~ AHA! I wasn't flushing the write buffer!
-- ~~I don't think I have been using Git branches appropriately. Current working version is on the connection-object branch~~ branches have been successfully merged to main & pruned
-
 To do:
 - [x] Accept client input for messages
 - [x] Request client username
@@ -15,3 +6,32 @@ To do:
 - [X] Echo messages from all clients to each client, not just to server
 - [ ] Intentional disconnect from client that sends a terminate signal to server
 - [ ] Server heartbeat messages and read timeout to close client thread
+
+This program will run a very simple real-time chat. Many features are missing.
+
+### 1. Running the server
+Start `IRCServer.java` from the command line and pass the desired port as an argument. The server will open the port to listen for incoming connections. Example:
+```java
+~$ java IRCServer.java 60010
+```
+
+### 2. Running the client
+To connect the server, you need to know its IP address and port. If both programs are running on the same computer, you only need the port.
+
+Start `IRCClient.java` from the command line and pass the desired IP address and port as arguments. Example:
+```java
+~$ java IRCClient.java 8.8.8.8 60010
+```
+Or, for a localhost connection, only pass the port:
+```java
+~$ java IRCClient.java 60010
+```
+
+### 3. Setting the username
+The program will ask the client for a username to be displayed alongside their messages. Usernames must be unique within the session. If the username is already in use by another user, the client will be prompted to enter something different. Follow the prompts to set your username.
+
+### 4. Chat
+Type messages and press Enter to send them. Your username will be prepended to let other users know who's saying what, and you will see other users' messages echoed onto your screen.
+
+### 5. Disconnect
+Formal disconnect features are not yet implemented. To quit the program, press Ctrl+C to terminate the process. Due to current limitations of the software, a user disconnecting will not automatically kill the thread on the server nor make the username available for reuse.

@@ -31,8 +31,12 @@ public class IRCServer {
 		}
 	}
 	
-	public static void startServer(int port) {
-		
+	/**
+	 * Initializes the server to a specific port.
+	 * @param arg - port to listen on (as a String, passed as argument from CLI)
+	 */
+	public static void startServer(String arg) {
+		int port = Integer.parseInt(arg);
 		Thread server = new Thread() {
 			@Override
 			public void run() {
@@ -149,7 +153,7 @@ public class IRCServer {
 	}
 
 	public static void main(String[] args) {
-		startServer(60010);
+		startServer(args[0]);
 	}
 
 }
