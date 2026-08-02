@@ -2,8 +2,8 @@ Initial source code from https://stackoverflow.com/questions/10069059/is-it-poss
 
 Current troubles:
 - ~~I need a Listener thread to remain active for new incoming requests, but currently the Listener is blocked by the active connection.~~ Multithread is working! Thank you Skrigak!!!
-- I would prefer Listener be its own Runnable class to make stack traces more readable. 
-- I/O requires a lot of try..catch blocks, which makes the code much harder to read. Because I still don't really understand I/O, I don't know how to consolidate things once I change them.
+- ~~I would prefer Listener be its own Runnable class to make stack traces more readable.~~ Unfortunately I don't think this is doable in this implementation & time frame.
+- ~~I/O requires a lot of try..catch blocks, which makes the code much harder to read. Because I still don't really understand I/O, I don't know how to consolidate things once I change them.~~ Getting better at seeing this and catching it.
 
 To do:
 - [x] Accept client input for messages

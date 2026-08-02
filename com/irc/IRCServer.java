@@ -7,12 +7,18 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.cert.CertificateException;
+import java.util.ArrayList;
 
 public class IRCServer {
 
 	public IRCServer() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	static ArrayList<String> usersList = new ArrayList<>();
+	static String protocol = "bashrocks-socket2socket";
+	static String version = "0.1";
 	
 	public static void startServer(int port) {
 		
@@ -24,7 +30,15 @@ public class IRCServer {
 					server = new ServerSocket(port);
 					do {
 						Connection client = new Connection(server.accept());
-						sendReceive(client.socket);
+						try {
+							validateProtocol(client);
+						} catch (CertificateException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							System.exit(0);
+						}
+						validateUsername(client);
+						sendReceive(client);
 					} while(true);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -34,20 +48,14 @@ public class IRCServer {
 		server.start();
 	}
 	
-	public static void sendReceive(Socket socket) {
-		Thread client = new Thread() {
+	public static void sendReceive(Connection client) {
+		Thread clientThread = new Thread() {
 			@Override
 			public void run() {
-				BufferedReader fromClient;
-				BufferedWriter toClient;
 				try {
-					toClient = new BufferedWriter(
-							new OutputStreamWriter(socket.getOutputStream()));
-					fromClient = new BufferedReader(
-							new InputStreamReader(socket.getInputStream()));
 					String messageIn = null;
 					String messageOut = null;
-					while ((messageIn = fromClient.readLine()) != null) {
+					while ((messageIn = client.reader.readLine()) != null) {
 						System.out.println(messageIn);
 					}
 				} catch (IOException e) {
@@ -56,16 +64,44 @@ public class IRCServer {
 				}
 			}
 		};
-		client.start();
+		clientThread.start();
+	}
+
+	// check we're on the same protocol and program version
+	public static void validateProtocol(Connection client) throws CertificateException {
+		try {
+			client.writer.write(protocol);
+			if(client.reader.readLine().contentEquals(protocol)) {
+				client.writer.write("Client and server protocol matches.");
+			} else { 
+				throw new CertificateException("Client/server protocol mismatch"); 
+				}
+			client.writer.write(version);
+			if(client.reader.readLine().contentEquals(version)) {
+				client.writer.write("Client and server version matches.");
+			} else { 
+				throw new CertificateException("Client/server version mismatch"); 
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	public static void handshake(Connection client) {
-		// check we're on the same protocol
-		checkUsername(client);
-	}
-	
-	public static void checkUsername(Connection client) {
-		
+	public static void validateUsername(Connection client) {
+		try {
+			String username = client.reader.readLine();
+			while(usersList.contains(username)) {
+				client.writer.write("Username " + username + " is already in "
+						+ "use. Try again.");
+				username = client.reader.readLine();
+			}
+			client.setUsername(username);
+			client.writer.write("Username set to " + client.getUsername());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {

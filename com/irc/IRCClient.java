@@ -18,6 +18,8 @@ public class IRCClient {
 	static Socket socket;
 	static String username;
 	static BufferedWriter toServer;
+	static String protocol = "bashrocks-socket2socket";
+	static String version = "0.1";
 	
 	// new, needs testing
 	public static void init(String addr, int port) {
@@ -33,12 +35,18 @@ public class IRCClient {
 	
 	public static void handshake() {
 		// check we're on the same protocol
-		setUsername();
+		askForUsername();
 	}
 	
-	public static void setUsername() {
+	public static void askForUsername() {
 		System.out.println("Please enter a username.");
 		username = userInput.nextLine();
+		try {
+			toServer.write(username);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void sendMessage() {

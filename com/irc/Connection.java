@@ -12,6 +12,10 @@ public class Connection {
 	public Socket socket;
 	public BufferedWriter writer;
 	public BufferedReader reader;
+	public String username;
+	
+	public String getUsername() { return this.username; }
+	public void setUsername(String username) { this.username = username; }
 	
 	public Connection(Socket socket) {
 		this.socket = socket;
