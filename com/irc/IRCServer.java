@@ -4,71 +4,65 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class IRCServer {
-	
-	static ServerSocket listener;
-	static Socket connection;
-	static BufferedReader in;
-	static BufferedWriter out;
 
 	public IRCServer() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static void listen(int port) {
-		Thread listenThread = new Thread() {
+	public static void startServer() {
+		
+		Thread server = new Thread() {
 			@Override
 			public void run() {
-				while(true) {
-					try {
-						listener = new ServerSocket(port);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					System.out.println("Listening on port " + listener.getLocalPort());
-					connect();
+				ServerSocket server;
+				try {
+					server = new ServerSocket(60010);
+
+					Socket socket;
+					do {
+						socket = server.accept();
+						sendReceive(socket);
+					} while(true);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		};
-		listenThread.start();
+		server.start();
 	}
 	
-	public static void connect() {
-		try {
-			connection = listener.accept();
-			listener.close();
-			System.out.println("Connected with " + connection.getInetAddress());
-			getMessage();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public static void getMessage() {
-		try {
-			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		
-			String line = null;
-	        while ((line = in.readLine()) != null) {
-	        	System.out.println(line);
-	        }
-        } catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static void sendReceive(Socket socket) {
+		Thread client = new Thread() {
+			@Override
+			public void run() {
+				BufferedReader fromClient;
+				BufferedWriter toClient;
+				try {
+					toClient = new BufferedWriter(
+							new OutputStreamWriter(socket.getOutputStream()));
+					fromClient = new BufferedReader(
+							new InputStreamReader(socket.getInputStream()));
+					String messageIn = null;
+					String messageOut = null;
+					while ((messageIn = fromClient.readLine()) != null) {
+						System.out.println(messageIn);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		};
+		client.start();
 	}
 
 	public static void main(String[] args) {
-		QuitProgram quitChecker = new QuitProgram();
-		Thread quitThread = new Thread(quitChecker);
-		quitThread.start();
-		
-		listen(1970);
+		startServer();
 	}
 
 }

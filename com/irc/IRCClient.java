@@ -6,50 +6,57 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-public class IRCClient {
+import java.util.Scanner;
 	
-	// static String serverAddress;
-	static Socket connection;
-	static BufferedReader in;
-	static BufferedWriter out;
+public class IRCClient {
 
 	public IRCClient() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static void connect(String address,int port) {
+	static Scanner userInput = new Scanner(System.in);
+	
+	public static void startSender() {
+		Thread sender = new Thread() {
+			@Override
+			public void run() {
+				try {
+					Socket socket = new Socket("localhost", 60010);
+					BufferedWriter toServer = new BufferedWriter(
+							new OutputStreamWriter(socket.getOutputStream()));
+
+					while (true) {
+						sendMessage(toServer);
+					}
+
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} 
+			}
+		};
+		sender.start();
+	}
+	
+	public static void sendMessage(BufferedWriter toServer) {
+		String message = userInput.nextLine();
 		try {
-			connection = new Socket(address,port);
-			System.out.println("Connected to server " + address);
-			out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			toServer.write(message);
+			toServer.newLine();
+			toServer.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 
 	public static void main(String[] args) {
 		// QuitProgram quitChecker = new QuitProgram();
 		// Thread quitThread = new Thread(quitChecker);
 		// quitThread.start();
-		connect("localhost",1970);
-
-        try {
-		while (true) {
-			out.write("Hello World!");
-            out.newLine();
-            out.flush();
-
-            Thread.sleep(200);
-        }
-        } catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		startSender();
 	}
 
 }
