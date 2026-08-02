@@ -5,14 +5,14 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class IRCClient {
 	
 	// static String serverAddress;
-	static Socket link;
+	static Socket connection;
 	static BufferedReader in;
 	static BufferedWriter out;
-	
 
 	public IRCClient() {
 		// TODO Auto-generated constructor stub
@@ -20,28 +20,16 @@ public class IRCClient {
 	
 	public static void connect(String address,int port) {
 		try {
-			link = new Socket(address,port);
+			connection = new Socket(address,port);
 			System.out.println("Connected to server " + address);
-			out = new BufferedWriter(new OutputStreamWriter(link.getOutputStream()));
+			out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	public static void sendMessage(String msg) {
-		try {
-			while (true) {
-				out.write(msg);
-	            out.newLine();
-	            out.flush();
-
-	            Thread.sleep(200);
-	        }
-	        } catch (IOException | InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 	}
 
 	public static void main(String[] args) {
@@ -49,8 +37,19 @@ public class IRCClient {
 		// Thread quitThread = new Thread(quitChecker);
 		// quitThread.start();
 		connect("localhost",1970);
-		sendMessage("Hello from " + link.getLocalSocketAddress());
-        
+
+        try {
+		while (true) {
+			out.write("Hello World!");
+            out.newLine();
+            out.flush();
+
+            Thread.sleep(200);
+        }
+        } catch (IOException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
