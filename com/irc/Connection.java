@@ -7,7 +7,7 @@ public class Connection implements Runnable {
 
 	public Connection(Socket socket) {
 		// TODO Auto-generated constructor stub
-		this.socket = socket; 
+		this.socket = socket;
 	}
 
 	@Override
