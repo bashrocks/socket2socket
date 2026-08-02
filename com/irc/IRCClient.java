@@ -1,11 +1,7 @@
 package com.irc;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.security.cert.CertificateException;
 import java.util.Scanner;
 	
 public class IRCClient {
@@ -15,38 +11,79 @@ public class IRCClient {
 	}
 	
 	static Scanner userInput = new Scanner(System.in);
+	static Connection server;
+	static String protocol = "bashrocks-socket2socket";
+	static String version = "0.1";
 	
-	public static void startSender() {
-		Thread sender = new Thread() {
-			@Override
-			public void run() {
-				try {
-					Socket socket = new Socket("localhost", 60010);
-					BufferedWriter toServer = new BufferedWriter(
-							new OutputStreamWriter(socket.getOutputStream()));
-
-					while (true) {
-						sendMessage(toServer);
-					}
-
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} 
-			}
-		};
-		sender.start();
+	// success/failure codes
+	static String successCode = "SUCCESS";
+	static String errResourceInUse = "ERR_IN_USE";
+	
+	// new, needs testing
+	// TODO change this for Connection object?
+	public static void init(String addr, int port) {
+		server = new Connection(addr,port);
+		System.out.println("Connected to server on port " + port);
 	}
-	
-	public static void sendMessage(BufferedWriter toServer) {
-		String message = userInput.nextLine();
+
+	// check we're on the same protocol and program version
+	public static void validateProtocol(Connection server) throws CertificateException {
 		try {
-			toServer.write(message);
-			toServer.newLine();
-			toServer.flush();
+			System.out.println("Validating protocols.");
+			server.writer.write(protocol);
+			System.out.println("Protocol information sent to server.");
+			String serverProtocol = server.reader.readLine();
+			System.out.println("Protocol information received from server.");
+			if(serverProtocol.contentEquals(protocol)) {
+				System.out.println("Client and server protocol matches.");
+			} else { 
+				throw new CertificateException("Client/server protocol mismatch"); 
+				}
+			System.out.println("Validating versions.");
+			server.writer.write(version);
+			System.out.println("Version information sent to server.");
+			String serverVersion = server.reader.readLine();
+			if(serverVersion.contentEquals(version)) {
+				System.out.println("Client and server version matches.");
+			} else { 
+				throw new CertificateException("Client/server version mismatch"); 
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void askForUsername() {
+		try {
+			System.out.println("Please enter a username.");
+			String username = userInput.nextLine();
+			server.writer.write(username);
+			System.out.println("Sending username to server...");
+			String serverResponse = server.reader.readLine();
+			while(serverResponse == errResourceInUse) {
+				System.out.println("That username is taken. Try again");
+				server.writer.write(username);
+				serverResponse = server.reader.readLine();
+			}
+			server.setUsername(username);
+			System.out.println("Username set to " + server.getUsername());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void sendMessage() {
+		String message;
+		System.out.println("You can now send messages.");
+		try {
+			while(true) {
+				message = server.getUsername() + ": " + userInput.nextLine();
+				server.writer.write(message);
+				server.writer.newLine();
+				server.writer.flush();
+			}
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
@@ -56,7 +93,17 @@ public class IRCClient {
 		// QuitProgram quitChecker = new QuitProgram();
 		// Thread quitThread = new Thread(quitChecker);
 		// quitThread.start();
-		startSender();
+		init("localhost", 60010);
+		/*
+		try {
+			validateProtocol(server);
+		} catch (CertificateException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		*/
+		// askForUsername();
+		sendMessage();
 	}
 
 }
